@@ -2,6 +2,7 @@
 
 
 #include "PlatformTrigger.h"
+#include "Components/BoxComponent.h"
 
 // Sets default values
 APlatformTrigger::APlatformTrigger()
@@ -9,6 +10,11 @@ APlatformTrigger::APlatformTrigger()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	TriggerVolume = CreateDefaultSubobject<UBoxComponent>(FName("Trigger volume"));
+	RootComponent = TriggerVolume;
+
+	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Mesh"));
+	Mesh->SetupAttachment(TriggerVolume);
 }
 
 // Called when the game starts or when spawned
