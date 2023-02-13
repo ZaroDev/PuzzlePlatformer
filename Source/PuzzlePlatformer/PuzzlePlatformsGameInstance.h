@@ -14,4 +14,17 @@ class PUZZLEPLATFORMER_API UPuzzlePlatformsGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 	
+public:
+	UPuzzlePlatformsGameInstance();
+
+	virtual void Init() override;
+
+	UFUNCTION(exec)
+	void Host();
+
+	UFUNCTION(exec)
+	void Join(const FString& address);
+private:
+
+	class UEngine* Engine;
 };
