@@ -14,20 +14,38 @@
 class UButton;
 class UWidget;
 
+USTRUCT()
+struct FServerData
+{
+	GENERATED_BODY()
+
+	FString Name;
+	uint16 CurrentPlayers;
+	uint16 MaxPlayers;
+	FString HostUserName;
+};
+
 UCLASS()
 class ONLINEMENUSYSTEM_API UMainMenu : public UMenuWidget
 {
 	GENERATED_BODY()
+public:
+	UMainMenu(const FObjectInitializer& ObjectInitializer);
 
+	void SetServerList(TArray<FServerData> ServersData);
+	void SetSelectedIndex(uint32 Index);
 protected:
 	virtual bool Initialize() override;
 	
 private:
+	void UpdateChildren();
+
 	UFUNCTION()
 	void OnHostClick();
 
 	UFUNCTION()
 	void OnJoinClick();
+	
 
 	UFUNCTION()
 	void OnJoinGameClick();
@@ -37,9 +55,18 @@ private:
 
 	UFUNCTION()
 	void OnQuitClick();
+
+	UFUNCTION()
+	void OnHostGameClick();
 	
 	UPROPERTY(meta = (BindWidget))
 	UButton* HostBtn = nullptr;
+
+	UPROPERTY(meta = (BindWidget))
+	UButton* BackHostBtn = nullptr;
+	
+	UPROPERTY(meta = (BindWidget))
+	UButton* HostGameBtn = nullptr;
 
 	UPROPERTY(meta = (BindWidget))
 	UButton* JoinBtn = nullptr;
@@ -62,8 +89,16 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	UWidget* JoinMenu = nullptr;
 
-	
+	UPROPERTY(meta = (BindWidget))
+	UWidget* HostMenu = nullptr;
 
 	UPROPERTY(meta = (BindWidget))
-	class UEditableTextBox* IPAddressBox = nullptr;
+	class UScrollBox* ServerScrollBox = nullptr;
+
+	UPROPERTY(meta = (BindWidget))
+	class UEditableTextBox* ServerNameBox = nullptr;
+
+	TSubclassOf<UUserWidget> ServerListItemClass;
+
+	TOptional<uint32> SelectedIndex;
 };

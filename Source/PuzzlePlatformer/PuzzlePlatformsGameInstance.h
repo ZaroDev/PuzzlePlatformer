@@ -5,13 +5,13 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include "MenuInterface.h"
+#include "Interfaces/OnlineSessionInterface.h"
 
 #include "PuzzlePlatformsGameInstance.generated.h"
 
 /**
  * 
  */
-class UMenuWidget;
 
 UCLASS()
 class PUZZLEPLATFORMER_API UPuzzlePlatformsGameInstance : public UGameInstance, public IMenuInterface
@@ -30,10 +30,10 @@ public:
 	void InGameLoadMenu();
 	
 	UFUNCTION(exec)
-	virtual void Host() override;
+	virtual void Host(FString ServerName) override;
 
 	UFUNCTION(exec)
-	virtual void Join(const FString& Address) override;
+	virtual void Join(uint32 Index) override;
 
 	UFUNCTION(BlueprintCallable)
 	virtual void Pause() override;
@@ -46,13 +46,27 @@ public:
 
 	UFUNCTION()
 	virtual void Quit() override;
-private:
 
+	UFUNCTION()
+	virtual void RefreshServerList() override;
+private:
+	void OnDestroySessionComplete(FName SessionNAme, bool Success);
+	void OnSessionCreateComplete(FName SessionName, bool Success);
+	void OnSessionFindComplete(bool Success);
+	void OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
+
+	void CreateSession();
+	
 	class UEngine* Engine;
 
 	TSubclassOf<class UUserWidget> MenuClass;
 	TSubclassOf<class UUserWidget> InGameMenuClass;
 
-	UMenuWidget* MainMenu = nullptr;
-	UMenuWidget* InGameMenu = nullptr;
+	class UMainMenu* MainMenu = nullptr;
+	class UInGameMenu* InGameMenu = nullptr;
+
+	IOnlineSessionPtr SessionInterface;
+	TSharedPtr<class FOnlineSessionSearch> SessionSearch;
+
+	FString ServerName;
 };

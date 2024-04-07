@@ -10,7 +10,8 @@ public class PuzzlePlatformer : ModuleRules
 
 		PublicDependencyModuleNames.AddRange(new string[]
 		{
-			"Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "OnlineMenuSystem", "UMG", "OnlineSubsystem"
+			"Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "OnlineMenuSystem", "UMG", "OnlineSubsystem",
+			"OnlineSubsystemSteam",
 		});
 	}
 }
