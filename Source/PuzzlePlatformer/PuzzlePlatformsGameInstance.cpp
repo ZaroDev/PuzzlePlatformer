@@ -13,8 +13,6 @@
 
 #include "OnlineSubsystem.h"
 
-#define	SESSION_NAME TEXT("My Session")
-
 UPuzzlePlatformsGameInstance::UPuzzlePlatformsGameInstance()
 {
 	const ConstructorHelpers::FClassFinder<UMainMenu> MenuBPClass(TEXT("/OnlineMenuSystem/WBP_MainMenu"));
@@ -94,9 +92,9 @@ void UPuzzlePlatformsGameInstance::Host(FString InServerName)
 	{
 		return;
 	}
-	if (auto ExistingSession = SessionInterface->GetNamedSession(SESSION_NAME))
+	if (auto ExistingSession = SessionInterface->GetNamedSession(NAME_GameSession))
 	{
-		SessionInterface->DestroySession(SESSION_NAME);
+		SessionInterface->DestroySession(NAME_GameSession);
 		return;
 	}
 	this->ServerName = InServerName;
@@ -119,7 +117,7 @@ void UPuzzlePlatformsGameInstance::Join(uint32 Index)
 		return;
 	}
 
-	SessionInterface->JoinSession(0, SESSION_NAME, SessionSearch->SearchResults[Index]);
+	SessionInterface->JoinSession(0, NAME_GameSession, SessionSearch->SearchResults[Index]);
 }
 
 void UPuzzlePlatformsGameInstance::Pause()
@@ -172,6 +170,14 @@ void UPuzzlePlatformsGameInstance::RefreshServerList()
 	}
 }
 
+void UPuzzlePlatformsGameInstance::StartSession()
+{
+	if(SessionInterface.IsUnique())
+	{
+		SessionInterface->StartSession(NAME_GameSession);
+	}
+}
+
 void UPuzzlePlatformsGameInstance::OnDestroySessionComplete(FName SessionNAme, bool Success)
 {
 	if (!Success)
@@ -207,7 +213,7 @@ void UPuzzlePlatformsGameInstance::OnSessionCreateComplete(FName SessionName, bo
 		return;
 	}
 
-	World->ServerTravel("/Game/Maps/Gameplay?listen");
+	World->ServerTravel("/Game/Maps/Lobby?listen");
 }
 
 void UPuzzlePlatformsGameInstance::OnSessionFindComplete(bool Success)
@@ -272,11 +278,11 @@ void UPuzzlePlatformsGameInstance::CreateSession()
 	
 	FOnlineSessionSettings SessionSettings;
 	SessionSettings.bIsLANMatch = IOnlineSubsystem::Get()->GetSubsystemName() == "NULL";
-	SessionSettings.NumPublicConnections = 2;
+	SessionSettings.NumPublicConnections = 5;
 	SessionSettings.bShouldAdvertise = true;
 	SessionSettings.bUseLobbiesIfAvailable = true;
 	SessionSettings.bUsesPresence = true;
 	SessionSettings.Set(TEXT("ServerName"), ServerName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 	
-	SessionInterface->CreateSession(0, SESSION_NAME, SessionSettings);
+	SessionInterface->CreateSession(0, NAME_GameSession, SessionSettings);
 }

@@ -49,6 +49,8 @@ public:
 
 	UFUNCTION()
 	virtual void RefreshServerList() override;
+
+	void StartSession();
 private:
 	void OnDestroySessionComplete(FName SessionNAme, bool Success);
 	void OnSessionCreateComplete(FName SessionName, bool Success);
